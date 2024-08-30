@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "932797512554",
+    "project_id": "notes-firebase-lakshay",
+    "storage_bucket": "notes-firebase-lakshay.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:932797512554:android:74d8805ae1cf29d8fa8313",
+        "android_client_info": {
+          "package_name": "com.example.mynotes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLjsf1hzqxpFd-EU9tjvEPt-B4347bEjI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
