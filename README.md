@@ -1,3 +1,5 @@
+# MyNotes
+This is a notes app and also my first mobile application using Flutter .
 # mynotes
 
 A new Flutter project.
