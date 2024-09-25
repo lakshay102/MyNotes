@@ -28,23 +28,28 @@ class _RegisterViewState extends State<RegisterView> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        TextField(
-          controller: _email,
-          decoration: const InputDecoration(hintText: 'Enter email'),
-          autocorrect: false,
-          enableSuggestions: false,
-          keyboardType: TextInputType.emailAddress,
-        ),
-        TextField(
-          controller: _password,
-          decoration: const InputDecoration(hintText: 'Enter password'),
-          obscureText: true,
-          autocorrect: false,
-          enableSuggestions: false,
-        ),
-        TextButton(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Register'),
+        backgroundColor: Colors.blue,
+      ),
+      body: Column(
+        children: [
+          TextField(
+            controller: _email,
+            decoration: const InputDecoration(hintText: 'Enter email'),
+            autocorrect: false,
+            enableSuggestions: false,
+            keyboardType: TextInputType.emailAddress,
+          ),
+          TextField(
+            controller: _password,
+            decoration: const InputDecoration(hintText: 'Enter password'),
+            obscureText: true,
+            autocorrect: false,
+            enableSuggestions: false,
+          ),
+          TextButton(
             onPressed: () async {
               try {
                 final email = _email.text;
@@ -64,8 +69,19 @@ class _RegisterViewState extends State<RegisterView> {
                 // print(e.code);
               }
             },
-            child: const Text('Register')),
-      ],
+            child: const Text('Register'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                '/login/',
+                (route) => false,
+              );
+            },
+            child: const Text('Already Registered? Login here!'),
+          )
+        ],
+      ),
     );
   }
 }

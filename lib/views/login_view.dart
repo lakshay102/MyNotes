@@ -28,49 +28,60 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-                children: [
-                  TextField(
-                    controller: _email,
-                    decoration: const InputDecoration(hintText: 'Enter email'),
-                    autocorrect: false,
-                    enableSuggestions: false,
-                    keyboardType: TextInputType.emailAddress,
-                  ),
-                  TextField(
-                    controller: _password,
-                    decoration:
-                        const InputDecoration(hintText: 'Enter password'),
-                    obscureText: true,
-                    autocorrect: false,
-                    enableSuggestions: false,
-                  ),
-                  TextButton(
-                      onPressed: () async {
-                        try{
-                          final email = _email.text;
-                        final password = _password.text;
-                        final userCredential = await FirebaseAuth.instance
-                            .signInWithEmailAndPassword(
-                                email: email, password: password);
-                        print(userCredential);
-                        }
-                        on FirebaseAuthException catch (e) {
-                          // print(e.code);
-                          if(e.code == 'invalid-credential'){
-                            print('User not exists');
-                          }
-                          else{
-                            print('SOMETHING ELSE HAPPENDED');
-                            print(e.code);
-                          }
-                          // print(" This is the error$e");     //To print the error
-                          // print(e.runtimeType);      //Used to get the type 
-                        }
-                        
-                      },
-                      child: const Text('Login')),
-                ],
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Login'),
+        backgroundColor: Colors.blue,
+      ),
+      body: Column(
+        children: [
+          TextField(
+            controller: _email,
+            decoration: const InputDecoration(hintText: 'Enter email'),
+            autocorrect: false,
+            enableSuggestions: false,
+            keyboardType: TextInputType.emailAddress,
+          ),
+          TextField(
+            controller: _password,
+            decoration: const InputDecoration(hintText: 'Enter password'),
+            obscureText: true,
+            autocorrect: false,
+            enableSuggestions: false,
+          ),
+          TextButton(
+              onPressed: () async {
+                try {
+                  final email = _email.text;
+                  final password = _password.text;
+                  final userCredential = await FirebaseAuth.instance
+                      .signInWithEmailAndPassword(
+                          email: email, password: password);
+                  print(userCredential);
+                } on FirebaseAuthException catch (e) {
+                  // print(e.code);
+                  if (e.code == 'invalid-credential') {
+                    print('User not exists');
+                  } else {
+                    print('SOMETHING ELSE HAPPENDED');
+                    print(e.code);
+                  }
+                  // print(" This is the error$e");     //To print the error
+                  // print(e.runtimeType);      //Used to get the type
+                }
+              },
+              child: const Text('Login')),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                '/register/',
+                (route) => false,
               );
+            },
+            child: const Text('Not Registered Yet? Register here!'),
+          )
+        ],
+      ),
+    );
   }
 }
