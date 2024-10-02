@@ -19,7 +19,8 @@ void main() {
       home: const HomePage(),
       routes: {
         '/login/': (context) => const LoginView(),
-        '/register/': (context) => const RegisterView()
+        '/register/': (context) => const RegisterView(),
+        '/notes/': (context) => const NotesView()
       }));
 }
 
@@ -73,15 +74,20 @@ class _NotesViewState extends State<NotesView> {
         actions: [
           PopupMenuButton<MenuAction>(
             onSelected: (value) async {
-              switch (value){
+              switch (value) {
                 case MenuAction.logout:
-                final shouldLogout = await showLogOutDialog(context);
-                if(shouldLogout){
-                  await FirebaseAuth.instance.signOut();
-                  Navigator.of(context).pushNamedAndRemoveUntil('/login/', (route) => false,);
-                }
-                devtools.log(shouldLogout.toString());
-                break;
+                  final shouldLogout = await showLogOutDialog(context);
+                  if (shouldLogout) {
+                    await FirebaseAuth.instance.signOut();
+                    // if(context.mounted){
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      '/login/',
+                      (_) => false,
+                    );
+                  // }
+                  }
+                  devtools.log(shouldLogout.toString());
+                  break;
               }
               // devtools.log(value.toString());
             },
@@ -106,7 +112,7 @@ Future<bool> showLogOutDialog(BuildContext context) {
     context: context,
     builder: (context) {
       return AlertDialog(
-        title: Text('Sign out'),
+        title: const Text('Sign out'),
         content: const Text('Are you sure you really want to sign out?'),
         actions: [
           TextButton(
