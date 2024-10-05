@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as devtools show log;
 import 'package:mynotes/constants/routes.dart';
+import 'package:mynotes/utilities/show_error_dialog.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -70,14 +71,50 @@ class _LoginViewState extends State<LoginView> {
                   );
                 } on FirebaseAuthException catch (e) {
                   // print(e.code);
-                  if (e.code == 'invalid-credential') {
-                    devtools.log('User not exists');
-                  } else {
-                    devtools.log('SOMETHING ELSE HAPPENDED');
-                    devtools.log(e.code);
+                  if (e.code == 'user-not-found') {
+                    // devtools.log('User not exists');
+                    return showErrorDialog(
+                      context,
+                      'User Not Registered',
+                    );
+                  }
+                  else if (e.code == 'wrong-password') {
+                    // devtools.log('User not exists');
+                    return showErrorDialog(
+                      context,
+                      'Incorrect password',
+                    );
+                  }
+                  else if (e.code == 'network-request-failed') {
+                    // devtools.log('User not exists');
+                    return showErrorDialog(
+                      context,
+                      'No Internet Connection',
+                    );
+                  }
+                  else if (e.code == 'invalid-credential') {
+                    // devtools.log('User not exists');
+                    return showErrorDialog(
+                      context,
+                      'Wrong credentials',
+                    );
+                  } 
+                  else {
+                    // devtools.log('SOMETHING ELSE HAPPENDED');
+                    // devtools.log(e.code);
+                    return showErrorDialog(
+                      context,
+                      // 'SOMETHING ELSE HAPPENDED',
+                      'Error: ${e.code}',
+                    );
                   }
                   // print(" This is the error$e");     //To print the error
                   // print(e.runtimeType);      //Used to get the type
+                } catch (e) {
+                    return showErrorDialog(
+                      context,
+                      e.toString(),
+                    );
                 }
               },
               child: const Text('Login')),
