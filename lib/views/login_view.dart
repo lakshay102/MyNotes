@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer' as devtools show log;
+// import 'dart:developer' as devtools show log;
 import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/utilities/show_error_dialog.dart';
 
@@ -54,17 +54,19 @@ class _LoginViewState extends State<LoginView> {
           ),
           TextButton(
               onPressed: () async {
+                final email = _email.text;
+                final password = _password.text;
                 try {
-                  final email = _email.text;
-                  final password = _password.text;
-                  final userCredential = await FirebaseAuth.instance
-                      .signInWithEmailAndPassword(
-                          email: email, password: password);
+                  // final userCredential =
+                      await FirebaseAuth.instance.signInWithEmailAndPassword(
+                    email: email,
+                    password: password,
+                  );
 
                   // Object? value  = null;
                   // print(Object);
                   // print(userCredential);
-                  devtools.log(userCredential.toString());
+                  // devtools.log(userCredential.toString());
                   Navigator.of(context).pushNamedAndRemoveUntil(
                     notesRoute,
                     (route) => false,
@@ -73,36 +75,32 @@ class _LoginViewState extends State<LoginView> {
                   // print(e.code);
                   if (e.code == 'user-not-found') {
                     // devtools.log('User not exists');
-                    return showErrorDialog(
+                    await showErrorDialog(
                       context,
                       'User Not Registered',
                     );
-                  }
-                  else if (e.code == 'wrong-password') {
+                  } else if (e.code == 'wrong-password') {
                     // devtools.log('User not exists');
-                    return showErrorDialog(
+                    await showErrorDialog(
                       context,
                       'Incorrect password',
                     );
-                  }
-                  else if (e.code == 'network-request-failed') {
+                  } else if (e.code == 'network-request-failed') {
                     // devtools.log('User not exists');
-                    return showErrorDialog(
+                    await showErrorDialog(
                       context,
                       'No Internet Connection',
                     );
-                  }
-                  else if (e.code == 'invalid-credential') {
+                  } else if (e.code == 'invalid-credential') {
                     // devtools.log('User not exists');
-                    return showErrorDialog(
+                    await showErrorDialog(
                       context,
                       'Wrong credentials',
                     );
-                  } 
-                  else {
+                  } else {
                     // devtools.log('SOMETHING ELSE HAPPENDED');
                     // devtools.log(e.code);
-                    return showErrorDialog(
+                    await showErrorDialog(
                       context,
                       // 'SOMETHING ELSE HAPPENDED',
                       'Error: ${e.code}',
@@ -111,10 +109,10 @@ class _LoginViewState extends State<LoginView> {
                   // print(" This is the error$e");     //To print the error
                   // print(e.runtimeType);      //Used to get the type
                 } catch (e) {
-                    return showErrorDialog(
-                      context,
-                      e.toString(),
-                    );
+                  await showErrorDialog(
+                    context,
+                    e.toString(),
+                  );
                 }
               },
               child: const Text('Login')),
