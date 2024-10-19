@@ -33,7 +33,7 @@ class _LoginViewState extends State<LoginView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: const Text('Login'),
         backgroundColor: Colors.blue,
       ),
       body: Column(
@@ -67,10 +67,23 @@ class _LoginViewState extends State<LoginView> {
                   // print(Object);
                   // print(userCredential);
                   // devtools.log(userCredential.toString());
-                  Navigator.of(context).pushNamedAndRemoveUntil(
+                  final user = FirebaseAuth.instance.currentUser;
+                  if(user?.emailVerified ?? false )
+                  {
+                    // User's email is verified
+                    Navigator.of(context).pushNamedAndRemoveUntil(
                     notesRoute,
                     (route) => false,
                   );
+                  }
+                  else
+                  {
+                    // User's email is NOT verified
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                    verifyEmailRoute,
+                    (route) => false,
+                  );
+                  }
                 } on FirebaseAuthException catch (e) {
                   // print(e.code);
                   if (e.code == 'user-not-found') {
