@@ -1,7 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 // import 'dart:developer' as devtools show log;
 import 'package:mynotes/constants/routes.dart';
+import 'package:mynotes/services/auth/auth_exceptions.dart';
+import 'package:mynotes/services/auth/auth_service.dart';
 import 'package:mynotes/utilities/show_error_dialog.dart';
 
 class LoginView extends StatefulWidget {
@@ -53,82 +54,61 @@ class _LoginViewState extends State<LoginView> {
             enableSuggestions: false,
           ),
           TextButton(
-              onPressed: () async {
-                final email = _email.text;
-                final password = _password.text;
-                try {
-                  // final userCredential =
-                      await FirebaseAuth.instance.signInWithEmailAndPassword(
-                    email: email,
-                    password: password,
-                  );
+            onPressed: () async {
+              final email = _email.text;
+              final password = _password.text;
+              try {
+                // final userCredential =
+                await AuthService.firebase()
+                    .logIn(email: email, password: password);
 
-                  // Object? value  = null;
-                  // print(Object);
-                  // print(userCredential);
-                  // devtools.log(userCredential.toString());
-                  final user = FirebaseAuth.instance.currentUser;
-                  if(user?.emailVerified ?? false )
-                  {
-                    // User's email is verified
-                    Navigator.of(context).pushNamedAndRemoveUntil(
+                // Object? value  = null;
+                // print(Object);
+                // print(userCredential);
+                // devtools.log(userCredential.toString());
+                final user = AuthService.firebase().currentUser;
+                if (user?.isEmailVerified ?? false) {
+                  // User's email is verified
+                  Navigator.of(context).pushNamedAndRemoveUntil(
                     notesRoute,
                     (route) => false,
                   );
-                  }
-                  else
-                  {
-                    // User's email is NOT verified
-                    Navigator.of(context).pushNamedAndRemoveUntil(
+                } else {
+                  // User's email is NOT verified
+                  Navigator.of(context).pushNamedAndRemoveUntil(
                     verifyEmailRoute,
                     (route) => false,
                   );
-                  }
-                } on FirebaseAuthException catch (e) {
-                  // print(e.code);
-                  if (e.code == 'user-not-found') {
-                    // devtools.log('User not exists');
-                    await showErrorDialog(
-                      context,
-                      'User Not Registered',
-                    );
-                  } else if (e.code == 'wrong-password') {
-                    // devtools.log('User not exists');
-                    await showErrorDialog(
-                      context,
-                      'Incorrect password',
-                    );
-                  } else if (e.code == 'network-request-failed') {
-                    // devtools.log('User not exists');
-                    await showErrorDialog(
-                      context,
-                      'No Internet Connection',
-                    );
-                  } else if (e.code == 'invalid-credential') {
-                    // devtools.log('User not exists');
-                    await showErrorDialog(
-                      context,
-                      'Wrong credentials',
-                    );
-                  } else {
-                    // devtools.log('SOMETHING ELSE HAPPENDED');
-                    // devtools.log(e.code);
-                    await showErrorDialog(
-                      context,
-                      // 'SOMETHING ELSE HAPPENDED',
-                      'Error: ${e.code}',
-                    );
-                  }
-                  // print(" This is the error$e");     //To print the error
-                  // print(e.runtimeType);      //Used to get the type
-                } catch (e) {
-                  await showErrorDialog(
-                    context,
-                    e.toString(),
-                  );
                 }
-              },
-              child: const Text('Login')),
+              } on UserNotFoundAuthException {
+                await showErrorDialog(
+                  context,
+                  'User Not Found',
+                );
+              } on WrongPasswordAuthException {
+                await showErrorDialog(
+                  context,
+                  'Incorrect password',
+                );
+              } on NetworkRequestFailedAuthException {
+                await showErrorDialog(
+                  context,
+                  'No Internet Connection',
+                );
+              } on InvalidCredentialsAuthException {
+                await showErrorDialog(
+                  context,
+                  'Wrong credentials',
+                );
+              } on GenericAuthException {
+                await showErrorDialog(
+                  context,
+                  'Authentication Error',
+                );
+              }
+            },
+            child: const Text('Login'),
+          ),
           TextButton(
             onPressed: () {
               Navigator.of(context).pushNamedAndRemoveUntil(
