@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui_web';
 import 'package:flutter/foundation.dart';
 import 'package:mynotes/services/crud/crud_exceptions.dart';
 import 'package:sqflite/sqflite.dart';
