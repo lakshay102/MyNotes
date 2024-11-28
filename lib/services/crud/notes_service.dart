@@ -10,8 +10,17 @@ class NotesService {
 
   List<DatabaseNote> _notes = [];
 
-  final _notesStreamController =
-      StreamController<List<DatabaseNote>>.broadcast();
+  static final NotesService _shared = NotesService._sharedInstance();
+  NotesService._sharedInstance(){
+    _notesStreamController = StreamController<List<DatabaseNote>>.broadcast(
+      onListen: () {
+        _notesStreamController.sink.add(_notes);
+      },
+    );
+  }
+  factory NotesService() => _shared;
+
+  late final StreamController<List<DatabaseNote>> _notesStreamController;
 
   Stream<List<DatabaseNote>> get allNotes => _notesStreamController.stream;
 
@@ -19,7 +28,7 @@ class NotesService {
     try {
       final user = await getUser(email: email);
       return user;
-    } on CouldNotFindNote{
+    } on CouldNotFindUser {
       final createdUser = await createUser(email: email);
       return createdUser;
     } catch (e) {
@@ -46,7 +55,7 @@ class NotesService {
     // update DB
     final updatesCount = await db.update(noteTable, {
       textColumn: text,
-      isSyncedWithCloudColumn: false,
+      isSyncedWithCloudColumn: 0,
     });
 
     if (updatesCount == 0) {
@@ -126,7 +135,7 @@ class NotesService {
     }
 
     const text = '';
-
+    //create the note
     final noteId = await db.insert(noteTable, {
       userIdColumn: owner.id,
       textColumn: text,
@@ -285,7 +294,7 @@ class DatabaseNote {
   DatabaseNote.fromRow(Map<String, Object?> map)
       : id = map[idColumn] as int,
         userId = map[userIdColumn] as int,
-        text = map[emailColumn] as String,
+        text = map[textColumn] as String,
         isSyncedWithCloud =
             (map[isSyncedWithCloudColumn] as int) == 1 ? true : false;
 
